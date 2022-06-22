@@ -64,7 +64,7 @@
     const graphContainer = document.querySelector("#graph-container");
 
     const loadGraph = async () => {
-      const res = await fetch("http://localhost:5500/data.json");
+      const res = await fetch("https://expenses-chart-component-chi.vercel.app/data.json");
       const data = await res.json();
 
       const highest = Math.max(...data.map((graph) => graph.amount));
