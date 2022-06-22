@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- displays site properly based on user's device -->
+
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./images/favicon-32x32.png"
+    />
+
+    <title>Frontend Mentor | Expenses chart component</title>
+    <link rel="stylesheet" href="./dist/output.css" />
+  </head>
+  <body class="w-100 min-h-screen flex justify-center items-center bg-cream">
+    <div class="md:w-1/2 p-5">
+      <div class="p-5 sm:p-7 rounded-lg bg-softred flex justify-between">
+        <div class="text-cream">
+          <p class="font-normal">My balance</p>
+          <p class="text-2xl font-bold">$921.48</p>
+        </div>
+        <div class="flex justify-center items-center">
+          <img src="./images/logo.svg" alt="Logo" />
+        </div>
+      </div>
+
+      <div class="mt-5 rounded-lg bg-paleorange p-7 sm:p-10">
+        <h1 class="text-2xl font-bold text-darkbrown">
+          Spending - Last 7 days
+        </h1>
+
+        <div
+          class="flex gap-3 sm:gap-5 md:gap-2 lg:gap-5 xl:gap-10 mt-10 h-56 items-end"
+          id="graph-container"
+        ></div>
+
+        <div class="w-full shadow-sm bg-cream my-5" style="height: 2px"></div>
+
+        <div class="flex justify-between items-center">
+          <div>
+            <p class="text-mediumbrown mb-2">Total this month</p>
+            <p class="text-4xl font-bold text-brown">$478.33</p>
+          </div>
+          <div>
+            <p class="text-brown font-bold mb-2 text-right">+2.4%</p>
+            <p class="text-mediumbrown">from last month</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="attribution text-center mt-10">
+        Challenge by
+        <a href="https://www.frontendmentor.io?ref=challenge" target="_blank"
+          >Frontend Mentor</a
+        >. Coded by <a href="#">Jerome Bacatan</a>.
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const graphContainer = document.querySelector("#graph-container");
+
+    const loadGraph = async () => {
+      const res = await fetch("http://localhost:5500/data.json");
+      const data = await res.json();
+
+      const highest = Math.max(...data.map((graph) => graph.amount));
+
+      const graphList = data.map((graph) => {
+        let bgColor = graph.amount == highest ? "bg-cyan" : "bg-softred";
+        let height = graph.amount * 3;
+        let test = "100";
+        let element = `
+          <div class="flex-1 text-center flex flex-col justify">
+            <div amount="$${graph.amount}" style="height: ${height}px" class="${bgColor} w-full relative rounded mb-2 h-20 cursor-pointer before:content-[attr(amount)] before:bg-darkbrown before:absolute before:-top-12 before:left-1/2 before:-translate-x-1/2 before:rounded before:p-2 before:text-paleorange before:z-50 before:text-center before:hidden hover:before:block"></div>
+            <p class="font-light text-sm text-mediumbrown">${graph.day}</p>
+          </div>
+        `;
+
+        return element;
+      });
+
+      graphContainer.innerHTML = graphList.join("");
+    };
+
+    loadGraph();
+  </script>
+</html>
